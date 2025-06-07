@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Vivek - AI Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0',
+                            300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b',
+                            600: '#475569', 700: '#334155', 800: '#1e293b',
+                            900: '#0f172a', 950: '#020617'
+                        },
+                        accent: {
+                            blue: '#3b82f6',
+                            purple: '#8b5cf6',
+                            emerald: '#10b981',
+                            slate: '#64748b'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-in-left': 'slideInLeft 0.4s ease-out',
+                        'slide-in-right': 'slideInRight 0.4s ease-out',
+                        'slide-up': 'slideUp 0.4s ease-out',
+                        'typing': 'typing 1.5s ease-in-out infinite',
+                        'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
+                        'scale-in': 'scaleIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideInLeft: {
+                            '0%': { opacity: '0', transform: 'translateX(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        },
+                        slideInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(20px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        },
+                        typing: {
+                            '0%, 60%, 100%': { transform: 'translateY(0)' },
+                            '30%': { transform: 'translateY(-4px)' }
+                        },
+                        pulseSoft: {
+                            '0%, 100%': { opacity: '0.8' },
+                            '50%': { opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Clean, readable styling */
+        .message-bubble { 
+            max-width: min(85%, 700px); 
+            transition: all 0.2s ease;
+        }
+        
+        .message-bubble:hover {
+            transform: translateY(-1px);
+        }
+        
+        .typing-dot {
+            animation: typing 1.5s ease-in-out infinite;
+        }
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+        .scrollbar-thin::-webkit-scrollbar-track { 
+            background: rgba(15, 23, 42, 0.3); 
+            border-radius: 3px; 
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb { 
+            background: linear-gradient(180deg, #3b82f6, #8b5cf6);
+            border-radius: 3px; 
+            transition: all 0.3s ease;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover { 
+            background: linear-gradient(180deg, #2563eb, #7c3aed);
+        }
+        
+        .glass-bg {
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+        }
+        
+        .glass-light {
+            background: rgba(248, 250, 252, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.3);
+        }
+        
+        @media (max-width: 640px) {
+            .message-bubble { max-width: 95%; }
+        }
+        
+        html, body { height: 100%; overflow: hidden; }
+        
+        .formatted-content {
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+        
+        .formatted-content .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 0.5rem 0;
+            gap: 0.6rem;
+            transition: all 0.2s ease;
+        }
+        
+        .formatted-content .bullet-point:hover {
+            transform: translateX(3px);
+        }
+        
+        .formatted-content .bullet-icon {
+            color: #3b82f6;
+            font-weight: bold;
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+        }
+        
+        .formatted-content .sub-bullet {
+            margin-left: 1.2rem;
+            color: #cbd5e1;
+        }
+        
+        .formatted-content .sub-bullet .bullet-icon {
+            color: #8b5cf6;
+        }
+        
+        .formatted-content .section-header {
+            font-weight: 600;
+            color: #f1f5f9;
+            margin: 1rem 0 0.5rem 0;
+            font-size: 1em;
+            border-left: 3px solid #3b82f6;
+            padding-left: 0.75rem;
+        }
+        
+        .formatted-content .section-header:first-child {
+            margin-top: 0;
+        }
+        
+        .formatted-content strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+        
+        .quick-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .quick-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+        
+        .avatar-glow {
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+        }
+        
+        .status-indicator {
+            animation: pulseSoft 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 text-gray-100 h-screen overflow-hidden">
+    <!-- Main Chat Container -->
+    <div class="flex flex-col h-full max-w-5xl mx-auto">
+        <!-- Clean Navigation -->
+        <nav class="glass-bg border-b border-slate-700/30 px-6 py-4 relative z-10">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="group flex items-center space-x-3 hover:opacity-80 transition-all duration-200">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
+                            <span class="text-white font-bold text-lg">V</span>
+                        </div>
+                        <span class="text-xl font-semibold text-gray-100 hidden sm:block">Portfolio</span>
+                        <span class="text-xl font-semibold text-gray-100 sm:hidden">Back</span>
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="hidden sm:flex items-center space-x-3 text-sm">
+                        <div class="w-2 h-2 bg-emerald-400 rounded-full status-indicator"></div>
+                        <span class="text-gray-300 font-medium">AI Online</span>
+                    </div>
+                    <button onclick="clearChat()" class="p-2 text-gray-400 hover:text-blue-400 transition-colors duration-200 hover:scale-110">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Chat Header -->
+        <header class="text-center py-6 px-6 border-b border-slate-700/30 flex-shrink-0">
+            <div class="flex items-center justify-center space-x-4 mb-3 animate-scale-in">
+                <div class="relative">
+                    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 via-purple-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg avatar-glow">
+                        <span class="text-white font-bold text-xl">V</span>
+                    </div>
+                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-slate-900 status-indicator"></div>
+                </div>
+                <div class="animate-slide-up" style="animation-delay: 0.1s;">
+                    <h1 class="text-2xl font-bold text-gray-100 mb-1">Chat with Vivek</h1>
+                    <p class="text-gray-400 font-medium">🤖 AI Portfolio Assistant</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Chat Messages Area -->
+        <main class="flex-1 flex flex-col min-h-0 overflow-hidden">
+            <div id="messages" class="flex-1 overflow-y-auto scrollbar-thin px-6 py-6 space-y-4">
+                <!-- Welcome Message -->
+                <div class="flex items-start space-x-4 animate-fade-in">
+                    <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold">V</span>
+                    </div>
+                    <div class="message-bubble">
+                        <div class="glass-bg rounded-2xl rounded-tl-lg p-5 shadow-lg border border-slate-600/20">
+                            <p class="text-gray-200 leading-relaxed">
+                                <span class="text-2xl">👋</span> 
+                                <strong class="text-white">Hello!</strong> I'm Vivek's AI assistant with comprehensive knowledge about his background, projects, skills, and experiences. 
+                                <br><br>
+                                <span class="text-blue-400">✨</span> Feel free to ask me anything - I'm here to help!
+                            </p>
+                        </div>
+                        <div class="ml-3 mt-2 text-xs text-gray-500 font-medium">System Online</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div id="typingIndicator" class="hidden px-6 pb-3">
+                <div class="flex items-start space-x-4 animate-fade-in">
+                    <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold">V</span>
+                    </div>
+                    <div class="glass-bg rounded-2xl rounded-tl-lg p-5 shadow-lg border border-slate-600/20">
+                        <div class="flex space-x-1">
+                            <div class="w-2 h-2 bg-blue-400 rounded-full typing-dot"></div>
+                            <div class="w-2 h-2 bg-purple-400 rounded-full typing-dot"></div>
+                            <div class="w-2 h-2 bg-blue-400 rounded-full typing-dot"></div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-2">Thinking...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="border-t border-slate-700/30 p-6 flex-shrink-0">
+                <!-- Quick Questions -->
+                <div class="mb-4 flex flex-wrap gap-2 justify-center animate-slide-up">
+                    <button onclick="quickQuestion('Tell me about Vivek')" class="quick-btn px-4 py-2 text-sm text-gray-300 hover:text-white bg-slate-700/60 hover:bg-slate-600/80 border border-slate-600/40 rounded-full">
+                        <span>👋</span> About Vivek
+                    </button>
+                    <button onclick="quickQuestion('What are his technical skills?')" class="quick-btn px-4 py-2 text-sm text-gray-300 hover:text-white bg-slate-700/60 hover:bg-slate-600/80 border border-slate-600/40 rounded-full">
+                        <span>💻</span> Tech Skills
+                    </button>
+                    <button onclick="quickQuestion('What projects has he worked on?')" class="quick-btn px-4 py-2 text-sm text-gray-300 hover:text-white bg-slate-700/60 hover:bg-slate-600/80 border border-slate-600/40 rounded-full">
+                        <span>🚀</span> Projects
+                    </button>
+                    <button onclick="quickQuestion('What are his career goals?')" class="quick-btn px-4 py-2 text-sm text-gray-300 hover:text-white bg-slate-700/60 hover:bg-slate-600/80 border border-slate-600/40 rounded-full">
+                        <span>🎯</span> Goals
+                    </button>
+                </div>
+
+                <!-- Input Form -->
+                <div class="glass-bg rounded-2xl p-4 shadow-lg border border-slate-600/20 animate-scale-in" style="animation-delay: 0.2s;">
+                    <div class="flex items-end space-x-3">
+                        <div class="flex-1">
+                            <textarea 
+                                id="messageInput" 
+                                rows="1"
+                                placeholder="Ask me anything about Vivek's journey..."
+                                maxlength="500"
+                                class="w-full bg-transparent text-gray-200 placeholder-gray-400 resize-none outline-none leading-relaxed"
+                                style="min-height: 24px; max-height: 120px;"
+                            ></textarea>
+                        </div>
+                        <button 
+                            onclick="sendMessage()" 
+                            id="sendBtn"
+                            class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const messagesContainer = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        // Auto-resize textarea
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            sendBtn.disabled = true;
+            showTypingIndicator();
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const data = await response.json();
+                
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    if (data.success) {
+                        addMessage(data.response, 'bot');
+                    } else {
+                        addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+                    }
+                    sendBtn.disabled = false;
+                    messageInput.focus();
+                }, Math.random() * 1000 + 500);
+
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage('Sorry, I\'m having trouble connecting. Please try again.', 'bot');
+                sendBtn.disabled = false;
+                messageInput.focus();
+            }
+        }
+
+        function addMessage(content, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex items-start space-x-4 ${sender === 'user' ? 'justify-end animate-slide-in-right' : 'animate-slide-in-left'}`;
+            
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const formattedContent = sender === 'bot' ? formatAIResponse(content) : content;
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="message-bubble">
+                        <div class="bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-2xl rounded-tr-lg p-4 shadow-lg">
+                            <p class="leading-relaxed">${formattedContent}</p>
+                        </div>
+                        <div class="mr-3 mt-2 text-xs text-gray-500 text-right">${timestamp}</div>
+                    </div>
+                    <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold">U</span>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold">V</span>
+                    </div>
+                    <div class="message-bubble">
+                        <div class="glass-bg rounded-2xl rounded-tl-lg p-4 shadow-lg border border-slate-600/20">
+                            <div class="text-gray-200 leading-relaxed formatted-content">${formattedContent}</div>
+                        </div>
+                        <div class="ml-3 mt-2 text-xs text-gray-500">${timestamp}</div>
+                    </div>
+                `;
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function formatAIResponse(content) {
+            const lines = content.split('\n');
+            let formattedHTML = '';
+            
+            for (let line of lines) {
+                line = line.trim();
+                if (!line) continue;
+                
+                if (line.includes(':') && !line.startsWith('•') && !line.startsWith('-') && line.length < 60) {
+                    formattedHTML += `<div class="section-header">${line}</div>`;
+                }
+                else if (line.includes('•') || line.match(/^\d+\./)) {
+                    const bulletText = line.replace(/^[•\-\*]\s*/, '').replace(/^\d+\.\s*/, '');
+                    formattedHTML += `
+                        <div class="bullet-point">
+                            <span class="bullet-icon">•</span>
+                            <span>${bulletText}</span>
+                        </div>
+                    `;
+                }
+                else if (line.match(/^[\s\-]+/) || line.includes(' - ')) {
+                    const subBulletText = line.replace(/^[\s\-]+/, '').replace(/^\-\s*/, '');
+                    formattedHTML += `
+                        <div class="bullet-point sub-bullet">
+                            <span class="bullet-icon">◦</span>
+                            <span>${subBulletText}</span>
+                        </div>
+                    `;
+                }
+                else {
+                    formattedHTML += `<div style="margin: 0.5rem 0;">${line}</div>`;
+                }
+            }
+            
+            if (!formattedHTML.includes('bullet-point')) {
+                return content.replace(/\n/g, '<br>');
+            }
+            
+            // Highlight technical terms
+            formattedHTML = formattedHTML
+                .replace(/\b(Python|JavaScript|Java|C\+\+|TensorFlow|PyTorch|Flask|React|Vue|Node\.js|MongoDB|SQL|Git|Docker|AWS|Azure|HTML|CSS|TypeScript)\b/g, '<strong>$1</strong>')
+                .replace(/\b(AI|ML|Machine Learning|Deep Learning|Computer Vision|NLP|Web Development|Full Stack|Frontend|Backend)\b/g, '<strong>$1</strong>');
+            
+            return formattedHTML;
+        }
+
+        function showTypingIndicator() {
+            typingIndicator.classList.remove('hidden');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            typingIndicator.classList.add('hidden');
+        }
+
+        function quickQuestion(question) {
+            messageInput.value = question;
+            sendMessage();
+        }
+
+        function clearChat() {
+            messagesContainer.innerHTML = `
+                <div class="flex items-start space-x-4 animate-fade-in">
+                    <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold">V</span>
+                    </div>
+                    <div class="message-bubble">
+                        <div class="glass-bg rounded-2xl rounded-tl-lg p-5 shadow-lg border border-slate-600/20">
+                            <p class="text-gray-200 leading-relaxed">
+                                <span class="text-2xl">👋</span> 
+                                <strong class="text-white">Hello!</strong> I'm Vivek's AI assistant with comprehensive knowledge about his background, projects, skills, and experiences. 
+                                <br><br>
+                                <span class="text-blue-400">✨</span> Feel free to ask me anything - I'm here to help!
+                            </p>
+                        </div>
+                        <div class="ml-3 mt-2 text-xs text-gray-500 font-medium">System Online</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.addEventListener('load', function() {
+            const preloadedQuestion = localStorage.getItem('chatQuestion');
+            if (preloadedQuestion) {
+                messageInput.value = preloadedQuestion;
+                localStorage.removeItem('chatQuestion');
+                setTimeout(() => sendMessage(), 800);
+            }
+            messageInput.focus();
+        });
+
+        window.addEventListener('resize', function() {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
+    </script>
+</body>
+</html>

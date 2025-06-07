@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vivek Mishra - AI Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'slide-in-left': 'slideInLeft 0.4s ease-out',
+                        'slide-in-right': 'slideInRight 0.4s ease-out',
+                        'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'typing': 'typing 1.5s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideInLeft: {
+                            '0%': { opacity: '0', transform: 'translateX(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        },
+                        slideInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(20px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        },
+                        typing: {
+                            '0%, 60%, 100%': { transform: 'translateY(0)' },
+                            '30%': { transform: 'translateY(-10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .typing-dot {
+            animation: typing 1.5s ease-in-out infinite;
+        }
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.1);
+            border-radius: 3px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.3);
+            border-radius: 3px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.5);
+        }
+        
+        .glass-dark {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.3);
+        }
+        
+        .message-bubble {
+            max-width: min(75%, 400px);
+        }
+        
+        @media (max-width: 640px) {
+            .message-bubble {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark-950 text-gray-100 min-h-screen">
+    <!-- Main Container -->
+    <div class="flex flex-col h-screen max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="glass-dark border-b border-dark-700/50 p-4 lg:p-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <span class="text-white font-bold text-lg">V</span>
+                        </div>
+                        <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-dark-950"></div>
+                    </div>
+                    <div>
+                        <h1 class="text-xl lg:text-2xl font-bold text-white">Vivek Mishra</h1>
+                        <p class="text-sm text-gray-400">AI Assistant • Computer Science Student</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <button onclick="clearChat()" class="hidden sm:flex items-center px-3 py-2 text-sm text-gray-400 hover:text-white transition-colors duration-200 glass-dark rounded-lg hover:bg-dark-700/50">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Clear
+                    </button>
+                    <a href="/data" class="hidden sm:flex items-center px-3 py-2 text-sm text-gray-400 hover:text-white transition-colors duration-200 glass-dark rounded-lg hover:bg-dark-700/50">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        Data
+                    </a>
+                    <!-- Mobile menu button -->
+                    <button onclick="toggleMobileMenu()" class="sm:hidden p-2 text-gray-400 hover:text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile menu -->
+            <div id="mobileMenu" class="hidden sm:hidden mt-4 pt-4 border-t border-dark-700/50 space-y-2">
+                <button onclick="clearChat()" class="w-full flex items-center px-3 py-2 text-sm text-gray-400 hover:text-white transition-colors duration-200 glass-dark rounded-lg">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    Clear Chat
+                </button>
+                <a href="/data" class="w-full flex items-center px-3 py-2 text-sm text-gray-400 hover:text-white transition-colors duration-200 glass-dark rounded-lg">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    View Data
+                </a>
+            </div>
+        </header>
+
+        <!-- Chat Messages -->
+        <main class="flex-1 flex flex-col min-h-0">
+            <div id="messages" class="flex-1 overflow-y-auto scrollbar-thin p-4 lg:p-6 space-y-6">
+                <!-- Welcome Message -->
+                <div class="flex items-start space-x-3 animate-fade-in">
+                    <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-medium text-sm">V</span>
+                    </div>
+                    <div class="message-bubble">
+                        <div class="bg-dark-800/60 backdrop-blur-sm border border-dark-700/50 rounded-2xl rounded-tl-lg p-4 shadow-lg">
+                            <p class="text-gray-200 text-sm lg:text-base leading-relaxed">
+                                👋 Hello! I'm <span class="font-semibold text-white">Vivek Mishra</span>, a Computer Science student from Hyderabad. 
+                                I'm here to answer your questions about my background, projects, skills, and experiences. 
+                                Feel free to ask me anything!
+                            </p>
+                        </div>
+                        <div class="ml-2 mt-2 text-xs text-gray-500">
+                            Just now
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div id="typingIndicator" class="hidden px-4 lg:px-6 pb-2">
+                <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-medium text-sm">V</span>
+                    </div>
+                    <div class="bg-dark-800/60 backdrop-blur-sm border border-dark-700/50 rounded-2xl rounded-tl-lg p-4 shadow-lg">
+                        <div class="flex space-x-1">
+                            <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                            <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                            <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="border-t border-dark-700/50 p-4 lg:p-6">
+                <!-- Quick Questions -->
+                <div class="mb-4 flex flex-wrap gap-2 justify-center sm:justify-start">
+                    <button onclick="quickQuestion('Tell me about yourself')" class="px-3 py-1.5 text-xs lg:text-sm text-gray-400 hover:text-white bg-dark-800/50 hover:bg-dark-700/50 border border-dark-700/30 rounded-full transition-all duration-200">
+                        👋 About
+                    </button>
+                    <button onclick="quickQuestion('What are your technical skills?')" class="px-3 py-1.5 text-xs lg:text-sm text-gray-400 hover:text-white bg-dark-800/50 hover:bg-dark-700/50 border border-dark-700/30 rounded-full transition-all duration-200">
+                        💻 Skills
+                    </button>
+                    <button onclick="quickQuestion('What projects have you worked on?')" class="px-3 py-1.5 text-xs lg:text-sm text-gray-400 hover:text-white bg-dark-800/50 hover:bg-dark-700/50 border border-dark-700/30 rounded-full transition-all duration-200">
+                        🚀 Projects
+                    </button>
+                    <button onclick="quickQuestion('What are your goals?')" class="px-3 py-1.5 text-xs lg:text-sm text-gray-400 hover:text-white bg-dark-800/50 hover:bg-dark-700/50 border border-dark-700/30 rounded-full transition-all duration-200">
+                        🎯 Goals
+                    </button>
+                </div>
+
+                <!-- Input Form -->
+                <div class="glass-dark rounded-2xl p-3 lg:p-4">
+                    <div class="flex items-end space-x-3">
+                        <div class="flex-1">
+                            <textarea 
+                                id="messageInput" 
+                                rows="1"
+                                placeholder="Ask me anything about my background, projects, or skills..."
+                                maxlength="500"
+                                class="w-full bg-transparent text-gray-200 placeholder-gray-500 resize-none outline-none text-sm lg:text-base"
+                                style="min-height: 20px; max-height: 120px;"
+                            ></textarea>
+                        </div>
+                        <button 
+                            onclick="sendMessage()" 
+                            id="sendBtn"
+                            class="flex-shrink-0 w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-xl transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
+                        >
+                            <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const messagesContainer = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        // Auto-resize textarea
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            sendBtn.disabled = true;
+            showTypingIndicator();
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const data = await response.json();
+                
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    if (data.success) {
+                        addMessage(data.response, 'bot', data.sources);
+                    } else {
+                        addMessage('Sorry, I encountered an error: ' + data.error, 'bot');
+                    }
+                    sendBtn.disabled = false;
+                    messageInput.focus();
+                }, Math.random() * 1000 + 800); // Realistic response time
+
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage('Sorry, I encountered a network error. Please try again.', 'bot');
+                sendBtn.disabled = false;
+                messageInput.focus();
+            }
+        }
+
+        function addMessage(content, sender, sources = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex items-start space-x-3 ${sender === 'user' ? 'justify-end animate-slide-in-right' : 'animate-slide-in-left'}`;
+            
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="message-bubble">
+                        <div class="bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-2xl rounded-tr-lg p-4 shadow-lg">
+                            <p class="text-sm lg:text-base leading-relaxed">${content}</p>
+                        </div>
+                        <div class="mr-2 mt-2 text-xs text-gray-500 text-right">
+                            ${timestamp}
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-medium text-sm">U</span>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-medium text-sm">V</span>
+                    </div>
+                    <div class="message-bubble">
+                        <div class="bg-dark-800/60 backdrop-blur-sm border border-dark-700/50 rounded-2xl rounded-tl-lg p-4 shadow-lg">
+                            <p class="text-gray-200 text-sm lg:text-base leading-relaxed">${content}</p>
+                            ${sources && sources.length > 0 ? `
+                                <div class="mt-4 pt-4 border-t border-dark-700/50">
+                                    <p class="text-xs font-medium text-gray-400 mb-3 flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m-1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        Sources
+                                    </p>
+                                    <div class="space-y-2">
+                                        ${sources.map(source => `
+                                            <div class="bg-dark-900/50 border border-dark-600/30 rounded-lg p-3">
+                                                <p class="text-xs text-gray-300 leading-relaxed">${source}</p>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="ml-2 mt-2 text-xs text-gray-500">
+                            ${timestamp}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            typingIndicator.classList.remove('hidden');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            typingIndicator.classList.add('hidden');
+        }
+
+        function quickQuestion(question) {
+            messageInput.value = question;
+            sendMessage();
+        }
+
+        function clearChat() {
+            messagesContainer.innerHTML = `
+                <div class="flex items-start space-x-3 animate-fade-in">
+                    <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-medium text-sm">V</span>
+                    </div>
+                    <div class="message-bubble">
+                        <div class="bg-dark-800/60 backdrop-blur-sm border border-dark-700/50 rounded-2xl rounded-tl-lg p-4 shadow-lg">
+                            <p class="text-gray-200 text-sm lg:text-base leading-relaxed">
+                                👋 Hello! I'm <span class="font-semibold text-white">Vivek Mishra</span>, a Computer Science student from Hyderabad. 
+                                I'm here to answer your questions about my background, projects, skills, and experiences. 
+                                Feel free to ask me anything!
+                            </p>
+                        </div>
+                        <div class="ml-2 mt-2 text-xs text-gray-500">
+                            Just now
+                        </div>
+                    </div>
+                </div>
+            `;
+            // Hide mobile menu if open
+            document.getElementById('mobileMenu').classList.add('hidden');
+        }
+
+        // Focus on input when page loads
+        window.addEventListener('load', function() {
+            messageInput.focus();
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuButton = e.target.closest('[onclick="toggleMobileMenu()"]');
+            if (!menuButton && !mobileMenu.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

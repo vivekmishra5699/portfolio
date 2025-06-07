@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vivek Mishra - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0',
+                            300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b',
+                            600: '#475569', 700: '#334155', 800: '#1e293b',
+                            900: '#0f172a', 950: '#020617'
+                        },
+                        accent: {
+                            blue: '#3b82f6',
+                            purple: '#8b5cf6',
+                            emerald: '#10b981',
+                            slate: '#64748b'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'slide-in-left': 'slideInLeft 0.6s ease-out',
+                        'slide-in-right': 'slideInRight 0.6s ease-out',
+                        'scale-in': 'scaleIn 0.5s ease-out',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideInLeft: {
+                            '0%': { opacity: '0', transform: 'translateX(-30px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        },
+                        slideInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(30px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.3);
+        }
+        
+        .glass-strong {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(100, 116, 139, 0.4);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #10b981 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .hero-bg {
+            background: radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+        }
+        
+        .section-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(51, 65, 85, 0.8));
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .section-card:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        
+        .tech-badge {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa;
+        }
+        
+        .timeline-dot {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-text {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 text-gray-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-strong">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-4 animate-slide-in-left">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold">V</span>
+                    </div>
+                    <span class="text-xl font-bold text-white">Vivek Mishra</span>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8 animate-slide-in-right">
+                    <a href="#home" class="nav-link text-gray-300 hover:text-blue-400">Home</a>
+                    <a href="#about" class="nav-link text-gray-300 hover:text-blue-400">About</a>
+                    <a href="#projects" class="nav-link text-gray-300 hover:text-blue-400">Projects</a>
+                    <a href="#skills" class="nav-link text-gray-300 hover:text-blue-400">Skills</a>
+                    <a href="#contact" class="nav-link text-gray-300 hover:text-blue-400">Contact</a>
+                    <a href="/chat" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300">
+                        💬 Chat with AI
+                    </a>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-btn" class="md:hidden text-gray-300 hover:text-blue-400 transition-colors duration-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <div class="flex flex-col space-y-3">
+                    <a href="#home" class="text-gray-300 hover:text-blue-400 transition-colors duration-300">Home</a>
+                    <a href="#about" class="text-gray-300 hover:text-blue-400 transition-colors duration-300">About</a>
+                    <a href="#projects" class="text-gray-300 hover:text-blue-400 transition-colors duration-300">Projects</a>
+                    <a href="#skills" class="text-gray-300 hover:text-blue-400 transition-colors duration-300">Skills</a>
+                    <a href="#contact" class="text-gray-300 hover:text-blue-400 transition-colors duration-300">Contact</a>
+                    <a href="/chat" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg text-center">
+                        💬 Chat with AI
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative pt-16 hero-bg">
+        <div class="text-center max-w-4xl mx-auto px-4">
+            <div class="animate-scale-in">
+                <h1 class="hero-text text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                    <span class="block text-gray-100">Hi, I'm</span>
+                    <span class="gradient-text block mt-2">Vivek Mishra</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in" style="animation-delay: 0.3s;">
+                    Computer Science Student passionate about <span class="text-blue-400 font-medium">AI</span>, 
+                    <span class="text-purple-400 font-medium">Web Technologies</span>, and building 
+                    <span class="text-emerald-400 font-medium">innovative digital experiences</span>
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 animate-slide-up" style="animation-delay: 0.6s;">
+                    <a href="#projects" class="group bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-xl hover:shadow-lg transition-all duration-300 text-lg font-medium transform hover:scale-105">
+                        <span class="group-hover:animate-float">🚀</span> View My Work
+                    </a>
+                    <a href="/chat" class="glass text-white px-8 py-4 rounded-xl hover:bg-dark-700/70 transition-all duration-300 text-lg font-medium border border-blue-400/30">
+                        🤖 Chat with AI
+                    </a>
+                    <a href="#contact" class="text-gray-300 hover:text-blue-400 border-2 border-gray-600 hover:border-blue-400 px-8 py-4 rounded-xl transition-all duration-300 text-lg font-medium">
+                        Get In Touch
+                    </a>
+                </div>
+                
+                <!-- Scroll Indicator -->
+                <div class="animate-float" style="animation-delay: 1s;">
+                    <svg class="w-6 h-6 mx-auto text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 relative">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16 animate-slide-up">
+                <h2 class="text-4xl md:text-6xl font-bold mb-6 gradient-text">About Me</h2>
+                <div class="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto"></div>
+            </div>
+            
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Personal Story -->
+                <div class="lg:col-span-2 animate-slide-in-left">
+                    <div class="section-card rounded-2xl p-8">
+                        <h3 class="text-2xl font-bold mb-6 text-white flex items-center">
+                            <span class="mr-3 text-3xl">👨‍💻</span>
+                            My Story
+                        </h3>
+                        <div class="space-y-4 text-gray-300 leading-relaxed">
+                            <p>
+                                I'm a <strong class="text-blue-400">Computer Science & Cloud Computing student</strong> at Loyola Academy, Hyderabad, 
+                                driven by curiosity about how technology can solve real-world problems.
+                            </p>
+                            <p>
+                                What started as fascination with chess AI has evolved into a passion for creating 
+                                <strong class="text-purple-400">intelligent systems that make a difference</strong>. From training neural networks 
+                                to play chess at grandmaster level to building medical management systems for rural healthcare.
+                            </p>
+                            <p>
+                                I believe in <strong class="text-emerald-400">learning by building</strong>. Each project teaches me something new – 
+                                whether it's the mathematical beauty of orbital mechanics in my solar system simulation or 
+                                the complexity of human-AI interaction in diagnostic systems.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Facts -->
+                <div class="animate-slide-in-right" style="animation-delay: 0.3s;">
+                    <div class="section-card rounded-2xl p-6">
+                        <h3 class="text-xl font-bold mb-6 text-white flex items-center">
+                            <span class="mr-3 text-2xl">⚡</span>
+                            Quick Facts
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-3">
+                                <span class="text-blue-400 text-xl">🎓</span>
+                                <div>
+                                    <div class="text-white font-medium">Education</div>
+                                    <div class="text-gray-400 text-sm">B.Sc. Computer Science & Cloud Computing</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <span class="text-purple-400 text-xl">📍</span>
+                                <div>
+                                    <div class="text-white font-medium">Location</div>
+                                    <div class="text-gray-400 text-sm">Hyderabad, India</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <span class="text-emerald-400 text-xl">🎯</span>
+                                <div>
+                                    <div class="text-white font-medium">Focus Areas</div>
+                                    <div class="text-gray-400 text-sm">AI/ML, Web Development, 3D Graphics</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <span class="text-yellow-400 text-xl">🚀</span>
+                                <div>
+                                    <div class="text-white font-medium">Current Goal</div>
+                                    <div class="text-gray-400 text-sm">Building AI systems for social impact</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Values & Approach -->
+            <div class="grid md:grid-cols-3 gap-6 mt-16">
+                <div class="card-hover glass rounded-xl p-6 text-center animate-scale-in" style="animation-delay: 0.4s;">
+                    <div class="text-4xl mb-4 animate-float">🔬</div>
+                    <h4 class="text-lg font-bold text-white mb-3">Research-Driven</h4>
+                    <p class="text-gray-400 text-sm">I dive deep into research papers and implement cutting-edge techniques like AlphaZero's reinforcement learning</p>
+                </div>
+                
+                <div class="card-hover glass rounded-xl p-6 text-center animate-scale-in" style="animation-delay: 0.5s;">
+                    <div class="text-4xl mb-4 animate-float" style="animation-delay: 0.5s;">🛠️</div>
+                    <h4 class="text-lg font-bold text-white mb-3">Hands-On Builder</h4>
+                    <p class="text-gray-400 text-sm">From chess AI to medical systems, I believe in learning through building real, functional applications</p>
+                </div>
+                
+                <div class="card-hover glass rounded-xl p-6 text-center animate-scale-in" style="animation-delay: 0.6s;">
+                    <div class="text-4xl mb-4 animate-float" style="animation-delay: 1s;">🌍</div>
+                    <h4 class="text-lg font-bold text-white mb-3">Impact-Focused</h4>
+                    <p class="text-gray-400 text-sm">Technology should solve real problems – from improving healthcare access to making legal help available</p>
+                </div>
+            </div>
+
+            <!-- Journey Timeline -->
+            <div class="mt-20 animate-slide-up" style="animation-delay: 0.7s;">
+                <h3 class="text-2xl font-bold mb-8 text-white text-center">My Journey So Far</h3>
+                <div class="section-card rounded-2xl p-8">
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-3 h-3 timeline-dot rounded-full mt-2 flex-shrink-0"></div>
+                            <div>
+                                <div class="text-blue-400 font-medium">2025 - Present</div>
+                                <div class="text-white font-bold">3D Web Gaming & Legal Tech</div>
+                                <div class="text-gray-400 text-sm">Built 3D Chess multiplayer game with Three.js and developed Legal_Connect platform for legal assistance</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-3 h-3 timeline-dot rounded-full mt-2 flex-shrink-0"></div>
+                            <div>
+                                <div class="text-purple-400 font-medium">2024</div>
+                                <div class="text-white font-bold">Deep Learning & Game AI</div>
+                                <div class="text-gray-400 text-sm">Built chess AI inspired by AlphaZero, trained on 800 matches using reinforcement learning</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-3 h-3 timeline-dot rounded-full mt-2 flex-shrink-0"></div>
+                            <div>
+                                <div class="text-emerald-400 font-medium">2024</div>
+                                <div class="text-white font-bold">3D Web Development</div>
+                                <div class="text-gray-400 text-sm">Created interactive solar system simulation with Three.js, exploring physics and visualization</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-3 h-3 timeline-dot rounded-full mt-2 flex-shrink-0"></div>
+                            <div>
+                                <div class="text-yellow-400 font-medium">2022 - Present</div>
+                                <div class="text-white font-bold">Computer Science Studies</div>
+                                <div class="text-gray-400 text-sm">Started my journey at Loyola Academy, building foundation in algorithms, software engineering, and cloud computing</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-slate-800/30 relative">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-bold mb-6 gradient-text animate-slide-up">Featured Projects</h2>
+                <div class="w-20 h-1 bg-gradient-to-r from-purple-500 to-emerald-500 mx-auto"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="projects-grid">
+                <!-- Projects will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 relative">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-bold mb-6 gradient-text animate-slide-up">Technical Skills</h2>
+                <div class="w-20 h-1 bg-gradient-to-r from-emerald-500 to-blue-500 mx-auto"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6" id="skills-grid">
+                <!-- Skills will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-slate-800/30 relative">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-4xl md:text-6xl font-bold mb-6 gradient-text animate-slide-up">Let's Connect</h2>
+            <div class="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto mb-16"></div>
+            
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                <div class="card-hover glass rounded-xl p-6 animate-scale-in" style="animation-delay: 0.2s;">
+                    <div class="text-4xl mb-4 animate-float">📧</div>
+                    <h3 class="text-xl font-bold mb-3">Email</h3>
+                    <a href="mailto:vivek29403@gmail.com" class="text-blue-400 hover:text-blue-300 transition-colors duration-300">
+                        vivek29403@gmail.com
+                    </a>
+                </div>
+                
+                <div class="card-hover glass rounded-xl p-6 animate-scale-in" style="animation-delay: 0.3s;">
+                    <div class="text-4xl mb-4 animate-float" style="animation-delay: 0.5s;">📍</div>
+                    <h3 class="text-xl font-bold mb-3">Location</h3>
+                    <span class="text-gray-300">Hyderabad, India</span>
+                </div>
+            </div>
+            
+            <div class="section-card rounded-2xl p-10 animate-scale-in" style="animation-delay: 0.4s;">
+                <h3 class="text-2xl font-bold mb-4">Chat with My AI Assistant</h3>
+                <p class="text-gray-400 mb-8 max-w-2xl mx-auto">
+                    Want to know more about my projects or experience? My AI assistant has detailed knowledge about everything!
+                </p>
+                <a href="/chat" class="inline-block bg-gradient-to-r from-blue-500 to-purple-600 text-white px-10 py-4 rounded-xl hover:shadow-lg transition-all duration-300 text-lg font-medium transform hover:scale-105">
+                    🤖 Start Chatting
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark-800/80 py-8 border-t border-dark-700">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p class="text-gray-400">
+                © 2025 Vivek Mishra. Built with <span class="text-red-400">❤️</span> and powered by AI.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Load portfolio data and populate sections
+        async function loadPortfolioData() {
+            try {
+                const response = await fetch('/api/portfolio-data');
+                const data = await response.json();
+                
+                populateProjects(data.projects || []);
+                populateSkills(data.skills || []);
+                
+            } catch (error) {
+                console.error('Error loading portfolio data:', error);
+                showFallbackContent();
+            }
+        }
+
+        function populateProjects(projects) {
+            const projectsGrid = document.getElementById('projects-grid');
+            
+            if (projects.length === 0) {
+                projectsGrid.innerHTML = '<div class="col-span-full text-center text-gray-400">Projects will be loaded from your data...</div>';
+                return;
+            }
+            
+            projects.slice(0, 6).forEach((project, index) => {
+                const projectCard = document.createElement('div');
+                projectCard.className = 'section-card rounded-xl p-6 card-hover animate-scale-in';
+                projectCard.style.animationDelay = `${index * 0.1}s`;
+                
+                const techBadges = (project.technologies || []).slice(0, 3).map(tech => 
+                    `<span class="tech-badge px-3 py-1 rounded-full text-xs font-medium">${tech}</span>`
+                ).join('');
+                
+                const githubLink = project.github_url || project.github || project.repository || '';
+                const liveLink = project.live_url || project.demo || project.website || '';
+                
+                projectCard.innerHTML = `
+                    <div class="mb-4">
+                        <h3 class="text-xl font-bold text-white mb-3">${project.name}</h3>
+                        <p class="text-gray-400 mb-4 text-sm leading-relaxed">${project.description}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${techBadges}
+                        </div>
+                        ${project.duration ? `<div class="text-xs text-gray-500"><strong>Duration:</strong> ${project.duration}</div>` : ''}
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex gap-2 flex-wrap">
+                            ${githubLink ? `
+                                <a href="${githubLink}" target="_blank" rel="noopener noreferrer" 
+                                   class="flex items-center gap-2 bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Code
+                                </a>
+                            ` : ''}
+                            ${liveLink ? `
+                                <a href="${liveLink}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                    </svg>
+                                    Demo
+                                </a>
+                            ` : ''}
+                        </div>
+                        <button onclick="askAboutProject('${project.name}')" class="w-full text-blue-400 hover:text-blue-300 font-medium transition-colors duration-300 text-left text-sm">
+                            🤖 Ask AI about this project →
+                        </button>
+                    </div>
+                `;
+                
+                projectsGrid.appendChild(projectCard);
+            });
+        }
+
+        function populateSkills(skills) {
+            const skillsGrid = document.getElementById('skills-grid');
+            
+            if (skills.length === 0) {
+                skillsGrid.innerHTML = '<div class="col-span-full text-center text-gray-400">Skills will be loaded from your data...</div>';
+                return;
+            }
+            
+            skills.forEach((category, index) => {
+                const skillCard = document.createElement('div');
+                skillCard.className = 'card-hover glass rounded-xl p-6 text-center animate-scale-in';
+                skillCard.style.animationDelay = `${index * 0.1}s`;
+                
+                const skillsList = (category.skills || []).slice(0, 3).map(skill => 
+                    typeof skill === 'string' ? skill : skill.name || skill
+                ).join(', ');
+                
+                const categoryIcons = {
+                    'Programming': '💻',
+                    'AI/ML': '🤖',
+                    'Web Development': '🌐',
+                    'Tools': '🛠️',
+                    'Languages': '🗣️'
+                };
+                
+                const isLanguages = category.category === 'Languages' || 
+                                  category.category.toLowerCase().includes('language');
+                
+                skillCard.innerHTML = `
+                    <div class="text-4xl mb-4 animate-float" style="animation-delay: ${index * 0.2}s;">${categoryIcons[category.category] || '⚡'}</div>
+                    <h3 class="text-lg font-bold text-white mb-3">${category.category}</h3>
+                    <p class="text-gray-400 mb-4 text-sm">${skillsList}</p>
+                    ${!isLanguages ? `
+                        <button onclick="askAboutSkills('${category.category}')" class="text-blue-400 hover:text-blue-300 transition-colors duration-300 font-medium text-sm">
+                            🚀 Learn more →
+                        </button>
+                    ` : ''}
+                `;
+                
+                skillsGrid.appendChild(skillCard);
+            });
+        }
+
+        function askAboutProject(projectName) {
+            localStorage.setItem('chatQuestion', `Tell me about your ${projectName} project`);
+            window.location.href = '/chat';
+        }
+
+        function askAboutSkills(category) {
+            localStorage.setItem('chatQuestion', `What are your ${category} skills?`);
+            window.location.href = '/chat';
+        }
+
+        function showFallbackContent() {
+            document.getElementById('projects-grid').innerHTML = `
+                <div class="col-span-full text-center">
+                    <p class="text-gray-400 mb-4">Projects information will be available soon.</p>
+                    <a href="/chat" class="text-blue-400 hover:text-blue-300 transition-colors duration-300">Ask my AI assistant about my projects →</a>
+                </div>
+            `;
+            
+            document.getElementById('skills-grid').innerHTML = `
+                <div class="col-span-full text-center">
+                    <p class="text-gray-400 mb-4">Skills information will be available soon.</p>
+                    <a href="/chat" class="text-blue-400 hover:text-blue-300 transition-colors duration-300">Ask my AI assistant about my skills →</a>
+                </div>
+            `;
+        }
+
+        // Load data when page loads
+        window.addEventListener('load', loadPortfolioData);
+    </script>
+</body>
+</html>
